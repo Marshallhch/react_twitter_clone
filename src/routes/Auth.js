@@ -1,9 +1,11 @@
+import { authService } from "fbase";
 import { useState } from "react";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [newAccount, setNewAccount] = useState(true);
+  const [error, setError] = useState("");
 
   const onChange = (event) => {
     //console.log(event.target.name);
@@ -17,18 +19,32 @@ const Auth = () => {
     }
   };
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    if (newAccount) {
-      console.log("create new account");
-    } else {
-      console.log("log in");
+    try {
+      let data;
+      if (newAccount) {
+        // console.log("create new account");
+        data = await authService.createUserWithEmailAndPassword(
+          email,
+          password
+        );
+      } else {
+        // console.log("log in");
+        data = await authService.signInWithEmailAndPassword(email, password);
+      }
+      console.log(data);
+    } catch (error) {
+      // console.log(error);
+      setError(error.message);
     }
   };
 
+  const toggleAccount = () => setNewAccount((prev) => !prev);
+
   return (
     <div>
-      <form>
+      <form onSubmit={onSubmit}>
         <input
           type='email'
           placeholder='Email'
@@ -46,6 +62,10 @@ const Auth = () => {
           onChange={onChange}
         />
         <input type='submit' value={newAccount ? "Create Account" : "Log In"} />
+        {error}
+        <span onClick={toggleAccount}>
+          {newAccount ? "Sign In" : "Create Account"}
+        </span>
       </form>
       <div>
         <button>Continue with Google</button>
