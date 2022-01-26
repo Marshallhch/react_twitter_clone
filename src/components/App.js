@@ -27,7 +27,7 @@ function App() {
       ) : (
         "initializing..."
       )}
-      <footer>&copy; {new Date().getFullYear()} TwitterClone</footer>
+      {/* <footer>&copy; {new Date().getFullYear()} TwitterClone</footer> */}
     </>
   );
 }
